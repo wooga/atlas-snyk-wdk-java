@@ -46,3 +46,36 @@ dependencies {
     implementation "net.wooga.gradle:atlas-snyk:0.9.0"
     testImplementation 'com.wooga.gradle:gradle-commons-test:[1,2)'
 }
+
+artifactory {
+    contextUrl = 'https://wooga.jfrog.io/wooga/'
+    publishit {
+        repository {
+            repoKey = 'atlas-maven'
+            username = project.properties.get("artifactory.user")
+            password = project.properties.get("artifactory.password")
+        }
+
+        defaults {
+            properties = ['environment': 'ci']
+            publications('ALL_PUBLICATIONS')
+            publishPom = true
+            publishIvy = false
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.codehaus.groovy:groovy-all:2.5.12'
+        force 'org.codehaus.groovy:groovy-macro:2.5.12'
+        force 'org.codehaus.groovy:groovy-nio:2.5.12'
+        force 'org.codehaus.groovy:groovy-sql:2.5.12'
+        force 'org.codehaus.groovy:groovy-xml:2.5.12'
+    }
+}
+
+//Disable publish Plugins since this is a private plugin
+project.tasks.publishPlugins.enabled(false)
+project.tasks.publish.dependsOn artifactoryPublish
+project.tasks.snapshot.dependsOn artifactoryPublish
