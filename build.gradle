@@ -18,7 +18,7 @@ plugins {
     id 'net.wooga.plugins' version '3.0.0-rc.2'
 }
 
-group 'net.wooga.gradle'
+group 'net.wooga.snyk'
 
 pluginBundle {
     website = 'https://wooga.github.io/atlas-snyk-wdk-java/'
@@ -31,8 +31,8 @@ gradlePlugin {
         plugins {
             id = 'net.wooga.snyk-wdk-java'
             displayName = 'Snyk Java Plugin Conventions'
-            description = 'Stuff'
-            implementationClass = 'wooga.gradle.snyk.wdk.java.JavaSnykPluginConventionsPlugin'
+            description = 'Conventions when the Snyk plugin is applied on a Java project'
+            implementationClass = 'wooga.gradle.snyk.wdk.java.JavaSnykConventionsPlugin'
         }
     }
 }
@@ -43,5 +43,6 @@ github {
 
 dependencies {
     implementation 'com.wooga.gradle:gradle-commons:[1,2)'
+    implementation "net.wooga.gradle:atlas-snyk:0.9.0"
     testImplementation 'com.wooga.gradle:gradle-commons-test:[1,2)'
 }

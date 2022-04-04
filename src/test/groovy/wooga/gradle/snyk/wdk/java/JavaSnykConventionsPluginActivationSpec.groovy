@@ -18,7 +18,7 @@ package wooga.gradle.snyk.wdk.java
 
 import nebula.test.PluginProjectSpec
 
-class JavaSnykPluginConventionsPluginActivationSpec extends PluginProjectSpec {
+class JavaSnykConventionsPluginActivationSpec extends PluginProjectSpec {
 
     @Override
     String getPluginName() { 'net.wooga.snyk-wdk-java' }

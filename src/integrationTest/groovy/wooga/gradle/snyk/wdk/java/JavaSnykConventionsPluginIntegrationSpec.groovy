@@ -16,6 +16,19 @@
 
 package wooga.gradle.snyk.wdk.java
 
-class JavaSnykPluginConventionsConventions {
+import com.wooga.gradle.test.IntegrationSpec
+
+class JavaSnykConventionsPluginIntegrationSpec extends IntegrationSpec {
+
+    def setup() {
+        buildFile << """
+            ${applyPlugin(JavaSnykConventionsPlugin)}
+        """.stripIndent()
+    }
+
+    def "do stuff"() {
+        expect:
+        1 + 1 == 2
+    }
 
 }
