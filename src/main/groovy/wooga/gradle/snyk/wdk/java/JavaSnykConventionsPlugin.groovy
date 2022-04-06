@@ -42,9 +42,8 @@ class JavaSnykConventionsPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         project.pluginManager.withPlugin("net.wooga.snyk", {
-
-            SnykRootPluginExtension snykExtension = project.extensions.getByName(SnykPlugin.EXTENSION_NAME) as SnykRootPluginExtension
-            Map<String, String> defaultProjectTags = ["team": "atlas", "component": "library", "platform": "jvm"]
+            project.logger.info("Apply snyk conventions for WDK java project")
+            Map<String, String> defaultProjectTags = ["team": "atlas", "component": "library", "platform": "jvm", "language": "groovy"]
 
             SnykConventions.projectName.defaultValue = project.name
             SnykConventions.projectLifecycle.defaultValue = toString([LifecycleOption.development, LifecycleOption.production])
@@ -52,7 +51,7 @@ class JavaSnykConventionsPlugin implements Plugin<Project> {
             SnykConventions.projectBusinessCriticality.defaultValue = toString([BusinessCriticalityOption.low])
             SnykConventions.projectTags.defaultValue = toString(defaultProjectTags)
             SnykConventions.autoDownload.defaultValue = true
-            SnykConventions.strategies.defaultValue = toString(["publish_monitor"])
+            SnykConventions.strategies.defaultValue = toString([SnykPlugin.MONITOR_CHECK])
             SnykConventions.failOn.defaultValue = toString(FailOnOption.all)
             SnykConventions.severityThreshold.defaultValue = toString(SeverityThresholdOption.high)
         })

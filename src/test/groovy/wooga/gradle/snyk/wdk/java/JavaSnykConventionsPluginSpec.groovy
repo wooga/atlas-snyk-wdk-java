@@ -43,7 +43,7 @@ class JavaSnykConventionsPluginSpec extends ProjectSpec {
     }
 
     @Unroll
-    def "applies the right proper conventions for unity wdks when the conventions are applied #message the snyk plugin is applied"() {
+    def "applies the right proper conventions for java wdks when the conventions are applied #message the snyk plugin is applied"() {
         given:
         assert !project.plugins.hasPlugin(PLUGIN_ID)
 
@@ -64,10 +64,10 @@ class JavaSnykConventionsPluginSpec extends ProjectSpec {
         snykExtension.projectLifecycle.get() == [LifecycleOption.development, LifecycleOption.production]
         snykExtension.projectEnvironment.get() == [EnvironmentOption.internal]
         snykExtension.projectBusinessCriticality.get() == [BusinessCriticalityOption.low]
-        snykExtension.projectTags.get() == ["team": "atlas", "component": "library", "platform": "jvm"]
+        snykExtension.projectTags.get() == ["team": "atlas", "component": "library", "platform": "jvm", "language": "groovy"]
 
         snykExtension.autoDownload.get()
-        snykExtension.strategies.get() == ["publish_monitor"]
+        snykExtension.strategies.get() == [SnykPlugin.MONITOR_CHECK]
         snykExtension.failOn.get() == FailOnOption.all
         snykExtension.severityThreshold.get() == SeverityThresholdOption.high
 
