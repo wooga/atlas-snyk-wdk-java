@@ -20,15 +20,11 @@ import nebula.test.ProjectSpec
 import spock.lang.Unroll
 import wooga.gradle.snyk.SnykPlugin
 import wooga.gradle.snyk.SnykRootPluginExtension
-import wooga.gradle.snyk.cli.BusinessCriticalityOption
-import wooga.gradle.snyk.cli.EnvironmentOption
-import wooga.gradle.snyk.cli.FailOnOption
-import wooga.gradle.snyk.cli.LifecycleOption
-import wooga.gradle.snyk.cli.SeverityThresholdOption
+import wooga.gradle.snyk.cli.*
 
 class JavaSnykConventionsPluginSpec extends ProjectSpec {
 
-    public static  final String SNYK_PLUGIN_ID = "net.wooga.snyk"
+    public static final String SNYK_PLUGIN_ID = "net.wooga.snyk"
     public static final String PLUGIN_ID = 'net.wooga.snyk-wdk-java'
 
     def "does not die if the snyk plugin is not applied"() {
@@ -65,7 +61,7 @@ class JavaSnykConventionsPluginSpec extends ProjectSpec {
         snykExtension.projectEnvironment.get() == [EnvironmentOption.internal]
         snykExtension.projectBusinessCriticality.get() == [BusinessCriticalityOption.low]
         snykExtension.projectTags.get() == ["team": "atlas", "component": "library", "platform": "jvm", "language": "groovy"]
-
+        snykExtension.initScript.get().asFile.text == snykInitScript
         snykExtension.autoDownload.get()
         snykExtension.strategies.get() == [SnykPlugin.MONITOR_CHECK]
         snykExtension.failOn.get() == FailOnOption.all
@@ -77,4 +73,14 @@ class JavaSnykConventionsPluginSpec extends ProjectSpec {
         false      | "before"
     }
 
+    static String getSnykInitScript() {
+        def out
+        try {
+            InputStream is = JavaSnykConventionsPlugin.class.getResourceAsStream("/snyk/snyk_init.gradle")
+            out = is.getText()
+        } catch (NullPointerException e) {
+            throw new FileNotFoundException("File " + "snyk/snyk_init.gradle" + " was not found inside JAR.");
+        }
+        out
+    }
 }
