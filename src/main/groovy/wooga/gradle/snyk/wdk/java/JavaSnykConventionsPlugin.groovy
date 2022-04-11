@@ -16,13 +16,15 @@
 
 package wooga.gradle.snyk.wdk.java
 
+import org.apache.commons.io.FileUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import wooga.gradle.snyk.SnykConventions
 import wooga.gradle.snyk.SnykPlugin
-import wooga.gradle.snyk.SnykPluginExtension
-import wooga.gradle.snyk.SnykRootPluginExtension
 import wooga.gradle.snyk.cli.*
+
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 class JavaSnykConventionsPlugin implements Plugin<Project> {
 
@@ -40,11 +42,10 @@ class JavaSnykConventionsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-
         project.pluginManager.withPlugin("net.wooga.snyk", {
             project.logger.info("Apply snyk conventions for WDK java project")
             Map<String, String> defaultProjectTags = ["team": "atlas", "component": "library", "platform": "jvm", "language": "groovy"]
-
+            SnykConventions.initScript.defaultValue = snykInitScript.path
             SnykConventions.projectName.defaultValue = project.name
             SnykConventions.projectLifecycle.defaultValue = toString([LifecycleOption.development, LifecycleOption.production])
             SnykConventions.projectEnvironment.defaultValue = toString([EnvironmentOption.internal])
@@ -55,5 +56,30 @@ class JavaSnykConventionsPlugin implements Plugin<Project> {
             SnykConventions.failOn.defaultValue = toString(FailOnOption.all)
             SnykConventions.severityThreshold.defaultValue = toString(SeverityThresholdOption.high)
         })
+    }
+
+    /**
+     * A temp solution to support buildScript dependency reporting.
+     * <p>
+     * We construct a custom init script which will override the init-script passed by snyk-cli to gradle to fetch
+     * the dependencies and inject the buildScript `classpath` configuration along the other selected configurations.
+     * This should be fixed and supported by snyk itself. I will open a support ticket.
+     *
+     * @return a {@code File} object pointing to the custom init script file.
+     */
+    static File getSnykInitScript() {
+        File tempInitScript = File.createTempFile("snyk_gradle_init", ".gradle")
+        String name = "/snyk/snyk_init.gradle"
+        try {
+            InputStream is = JavaSnykConventionsPlugin.class.getResourceAsStream(name)
+            Files.copy(is, tempInitScript.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            FileUtils.forceDelete(tempInitScript);
+            throw e;
+        } catch (NullPointerException e) {
+            FileUtils.forceDelete(tempInitScript);
+            throw new FileNotFoundException("File " + name + " was not found inside JAR.");
+        }
+        tempInitScript
     }
 }
