@@ -27,4 +27,4 @@ pluginManagement {
   }
 }
 
-rootProject.name = 'atlas-snyk-wdk-java'
+rootProject.name = 'snyk-wdk-java'
