@@ -55,6 +55,7 @@ class JavaSnykConventionsPlugin implements Plugin<Project> {
             SnykConventions.strategies.defaultValue = toString([SnykPlugin.MONITOR_CHECK])
             SnykConventions.failOn.defaultValue = toString(FailOnOption.all)
             SnykConventions.severityThreshold.defaultValue = toString(SeverityThresholdOption.high)
+            SnykConventions.orgName.defaultValue = "wooga"
         })
     }
 
