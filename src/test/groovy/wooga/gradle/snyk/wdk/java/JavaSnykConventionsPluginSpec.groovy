@@ -16,6 +16,7 @@
 
 package wooga.gradle.snyk.wdk.java
 
+import com.wooga.snyk.GradleInit
 import nebula.test.ProjectSpec
 import spock.lang.Unroll
 import wooga.gradle.snyk.SnykPlugin
@@ -75,13 +76,6 @@ class JavaSnykConventionsPluginSpec extends ProjectSpec {
     }
 
     static String getSnykInitScript() {
-        def out
-        try {
-            InputStream is = JavaSnykConventionsPlugin.class.getResourceAsStream("/snyk/snyk_init.gradle")
-            out = is.getText()
-        } catch (NullPointerException e) {
-            throw new FileNotFoundException("File " + "snyk/snyk_init.gradle" + " was not found inside JAR.");
-        }
-        out
+        GradleInit.snykInitScript.text
     }
 }
